@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX_SIZE 20
+#define MAX_SIZE 8
+int diff = 0;
 
 void swap(int *a, int *b) {
     int temp = *a;
@@ -118,18 +119,22 @@ int main() {
     int size;
     srand(time(NULL));
 
+
     while (1) {
         printf("Enter the size of the grid (0 for quit): ");
         scanf("%d", &size);
-
+        
         if (size == 0) {
             break;
         }
 
-        if (size < 4 || size > MAX_SIZE) {
+        if (size < 2 || size > MAX_SIZE) {
             printf("Invalid grid size. Please enter a number between 4 and %d.\n", MAX_SIZE);
             continue;
         }
+
+        printf("Enter scramble amount: ");
+        scanf("%d", &diff);
 
         int **grid = (int **)malloc(size * sizeof(int *));
         for (int i = 0; i < size; i++) {
@@ -142,17 +147,21 @@ int main() {
         int *rightClues = (int *)malloc(size * sizeof(int));
 
         generateSolvedGrid(grid, size); 
-        for (int i = 0; i < size*2; i++) {
-            shuffleRows(grid, size);
+        for (int i = 0; i <= diff; i++) {
+            int r = rand() % 100;
+            if (r >= 50) {
+                shuffleRows(grid, size);
+            } else {
             shuffleColumns(grid, size);
+            }
         }
 
         generateClues(grid, size, topClues, bottomClues, leftClues, rightClues);
         
-        printf("\n    skyscrapers generated: \n\n");
+        printf("\n   skyscrapers generated: \n\n");
         printGrid(grid, size);
 
-        printf("    constrains: \n\n");
+        printf("   visibilty clues: \n\n");
         printClues(topClues, bottomClues, leftClues, rightClues, size);
         printf("\n");
         for (int i = 0; i < size; i++) {
